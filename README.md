@@ -1,12 +1,17 @@
 # Flat Minima Interpretability
-
 Figuring out connections between loss landscapes and interpretability.
+## Quick Overview
 
-Investigating how to speed up phase changes in grokking [here](https://github.com/AsaCooperStickland/FlatMinimaInterpretability/blob/main/Flat_Minima_%2B_A_Mechanistic_Interpretability_Analysis_of_Grokking.ipynb)
+
+Notebook investigating how to speed up phase changes in grokking [here](https://github.com/AsaCooperStickland/FlatMinimaInterpretability/blob/main/Flat_Minima_%2B_A_Mechanistic_Interpretability_Analysis_of_Grokking.ipynb).
+
+Notebook investigating the Git Re-Basin phenomenon where independently trained models lie in the same loss basin, and how this might be connected to flat minima, [here](https://github.com/AsaCooperStickland/FlatMinimaInterpretability/blob/main/git_rebasin_Asa_MLP_MNIST.ipynb).
+
+## Git Re-Basin
 
 There has been some work (and a lot of discussion on Twitter!) recently about whether the combination of neural nets + sgd produces solutions which lie in the same loss basin. Lying in the same basin means we should be able to find a linear path between two independently trained networks where all points on the path have low loss (if we see a bump, that implies we've arrived in a new basin). Having this linear path of low loss is known as 'linear mode connectivity'.
 
-In particular, the Git Re-Basin [paper](https://arxiv.org/abs/2209.04836) by Samuel Ainsworth at al. Showed that under some settings, all we need to get linear mode connectivity is to permute the hidden states of one model so that it matches another. A Twitter [replication](https://twitter.com/stanislavfort/status/1571967289649688576) of this by Stanislav Fort found that this permutation-enabled linear mode connectivity only worked for certain learning rates. In fact he found for plain sgd only with a high learning rate and adam only with a low learning rate. 
+In particular, the Git Re-Basin [paper](https://arxiv.org/abs/2209.04836) by Samuel Ainsworth et al. showed that under some settings, all we need to get linear mode connectivity is to permute the hidden states of one model so that it matches another. A Twitter [replication](https://twitter.com/stanislavfort/status/1571967289649688576) of this by Stanislav Fort found that this permutation-enabled linear mode connectivity only worked for certain learning rates. In fact he found for plain sgd only with a high learning rate and adam only with a low learning rate. 
 
 I found that's not quite the whole story, and by expanding the range of learning rates tested, I found there is a 'sweet spot' of not too high and not too low learning rates for both optimizers, see plots below. Additionally, it looks like high learning rates caused a sudden explosion in the loss gap between model 1 and model 2, whereas for lower learning rates the increase in gap is slower.
 
@@ -43,3 +48,4 @@ Fig.2 - Changing learning rate and varying Fisher penalty with SGD as the optimi
 Fig.2 - Changing learning rate and varying Fisher penalty with SGD as the optimizer. Sparsity refers to the fraction of activations that were non-zero after the ReLU activation function.
 </p>
 
+Overall it's difficult to extrapolate from the limited experiments recorded in the graphs above, but we can speculate that Fisher penalties lead to more linear mode connectivity, at least for some learning rate ranges. They also seem to create sparser activations, at least for lower learning rates. Again very speculatively, it's possible that over 50% sparsity is required for Git Re-Basin to work, but that increasing sparsity too much leads to instability. I'm excited to dig in to this idea and get to the bottom of these results!
