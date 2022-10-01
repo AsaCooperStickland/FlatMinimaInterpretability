@@ -81,15 +81,17 @@ Fig.6 - Changing weight decay for the modular addition task.
 <p align = "center">
 Fig.7 - Changing weight decay for the 5 digit addition task.
 </p>
+
+Finally increasing Fisher penalty also induces quicker grokking.
+
 <p align = "center">
  <img src="plots/vary_fpen_mod.png" alt="drawing" height=400/>
 
  </p>
-
-Finally increasing Fisher penalty also induces quicker grokking.
 <p align = "center">
 Fig.8 - Changing Fisher penalty for the modular addition task.
 </p>
+
 <p align = "center">
  <img src="plots/vary_fpen_5digit.png" alt="drawing" height=400/>
 
