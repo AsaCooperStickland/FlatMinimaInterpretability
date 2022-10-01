@@ -75,7 +75,7 @@ Secondly I looked at the role of weight decay. For two different tasks I found i
 Fig.6 - Changing weight decay for the modular addition task.
 </p>
 <p align = "center">
- <img src="plots/vary_weight_decay_5add.png" alt="drawing" height=400/>
+ <img src="plots/vary_weight_decay_5digit.png" alt="drawing" height=400/>
 
  </p>
 <p align = "center">
@@ -91,7 +91,7 @@ Finally increasing Fisher penalty also induces quicker grokking.
 Fig.8 - Changing Fisher penalty for the modular addition task.
 </p>
 <p align = "center">
- <img src="plots/vary_fpen_5add.png" alt="drawing" height=400/>
+ <img src="plots/vary_fpen_5digit.png" alt="drawing" height=400/>
 
  </p>
 <p align = "center">
