@@ -38,14 +38,62 @@ I was interested if flatter minima would change things. Intuitively, the 'simple
 
  </p>
 <p align = "center">
-Fig.2 - Changing learning rate and varying Fisher penalty with SGD as the optimizer. Sparsity refers to the fraction of activations that were non-zero after the ReLU activation function. The models with a Fisher penalty are not plotted above a learning rate of about 0.1 due to training instability.
+Fig.3 - Changing learning rate and varying Fisher penalty with SGD as the optimizer. Sparsity refers to the fraction of activations that were non-zero after the ReLU activation function. The models with a Fisher penalty are not plotted above a learning rate of about 0.1 due to training instability.
 </p>
 <p align = "center">
  <img src="plots/adam_sparsity.png" alt="drawing" height=400/>
 
  </p>
 <p align = "center">
-Fig.2 - Changing learning rate and varying Fisher penalty with SGD as the optimizer. Sparsity refers to the fraction of activations that were non-zero after the ReLU activation function.
+Fig.4 - Changing learning rate and varying Fisher penalty with SGD as the optimizer. Sparsity refers to the fraction of activations that were non-zero after the ReLU activation function.
 </p>
 
 Overall it's difficult to extrapolate from the limited experiments recorded in the graphs above, but we can speculate that Fisher penalties lead to more linear mode connectivity, at least for some learning rate ranges. They also seem to create sparser activations, at least for lower learning rates. Again very speculatively, it's possible that over 50% sparsity is required for Git Re-Basin to work, but that increasing sparsity too much leads to instability. I'm excited to dig in to this idea and get to the bottom of these results!
+
+## Grokking
+
+I also investigated a few things to do with another strange deep learning phenomenon, "grokking", i.e. test loss going from very high to very low on certain tasks after a lot (10k epochs!) of time training.
+I build on Neel Nanda and Tom Lieberum's results from a [Circuits](https://distill.pub/2020/circuits/zoom-in/)-based approach to understanding Grokking. Their key claim is that grokking will occur if you take any setting with a **phase change** and limit the amount of training data, and that the story of grokking is really the story of phase changes (a la [induction bumps](https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html)). 
+
+My idea is that this phase change is between a **complicated** stage (memorization) to a **simple** one (e.g. the discrete fourier transform solution). It's been [hypothesized](https://www.alignmentforum.org/posts/EkSvsJkZE8GCeCj7u/basin-broadness-depends-on-the-size-and-number-of-orthogonal-1) that 'broad basins', or flat minima, result in simpler functions. We explore this question with grokking as a testbed.
+
+First I tested a few other things, below I show different activation functions. ReLU works well, GELU less so, and the newly proposed [SoLU](https://transformer-circuits.pub/2022/solu/index.html) fails to grok at all in 40k epochs.
+<p align = "center">
+ <img src="plots/vary_activation_function.png" alt="drawing" height=400/>
+
+ </p>
+<p align = "center">
+Fig.5 - Changing the activation function for the modular addition task.
+</p>
+
+Secondly I looked at the role of weight decay. For two different tasks I found it was crucial for grokking to occur, with too small values leading to no grokking, and higher weight decay leading to quicker grokking. I also plot the entropy of attention weights (i.e. a measure of how concentrated they are on a given token) and the number of activations that were set to zero by ReLU, or "sparsity". These two measures seem to change around the same time that grokking occurs, but it's hard to say anything concrete about their relationship to the things I'm varying in these graphs.
+<p align = "center">
+ <img src="plots/vary_weight_decay_mod.png" alt="drawing" height=400/>
+
+ </p>
+<p align = "center">
+Fig.6 - Changing weight decay for the modular addition task.
+</p>
+<p align = "center">
+ <img src="plots/vary_weight_decay_5add.png" alt="drawing" height=400/>
+
+ </p>
+<p align = "center">
+Fig.7 - Changing weight decay for the 5 digit addition task.
+</p>
+<p align = "center">
+ <img src="plots/vary_fpen_mod.png" alt="drawing" height=400/>
+
+ </p>
+
+Finally increasing Fisher penalty also induces quicker grokking.
+<p align = "center">
+Fig.8 - Changing Fisher penalty for the modular addition task.
+</p>
+<p align = "center">
+ <img src="plots/vary_fpen_5add.png" alt="drawing" height=400/>
+
+ </p>
+<p align = "center">
+Fig.9 - Changing Fisher penalty for the 5 digit addition task.
+</p>
